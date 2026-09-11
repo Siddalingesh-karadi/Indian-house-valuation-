@@ -110,8 +110,8 @@ Instead of assuming parametric normality ($y \pm 1.96 \times \text{RMSE}$), the 
 
 ### Installation
 ```bash
-git clone https://github.com/izaanz/ML-Indian-House-Prediction.git
-cd ML-Indian-House-Prediction
+git clone https://github.com/Nihalmutgi/Indian-house-valuation-.git
+cd Indian-house-valuation-
 pip install -r requirements.txt
 ```
 
