@@ -1,202 +1,165 @@
-# India House Price Prediction Model
+# Intelligent Residential Property Valuation Using Machine Learning
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## Overview
-
-This project focuses on predicting house prices in India using machine learning techniques. The model was trained on a subset of the [India Housing Prices Dataset](https://www.kaggle.com/datasets/ankushpanday1/india-house-price-prediction/data) from Kaggle.  This dataset provides detailed insights into housing market trends across various Indian states, including property types, pricing, location, and amenities.
-
-**Key Features:**
-
-* **Data Exploration and Preprocessing:**  Includes exploratory data analysis (EDA) to understand the data and preprocessing steps to prepare it for modeling.
-* **Model Training:**  Employs various regression models including Linear Regression, Decision Tree, Random Forest, and XGBoost.
-* **Hyperparameter Tuning:**  Parameter tuning was performed for all models, with a focus on Grid Search for optimizing XGBoost.
-* **Performance Evaluation:**  Comprehensive evaluation of each model using metrics like Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-squared (R2).
-
-## Dataset
-
-The model was trained using the [India Housing Prices Dataset](https://www.kaggle.com/datasets/ankushpanday1/india-house-price-prediction/data) available on Kaggle.
-
-> The India Housing Prices Dataset contains 2.5 lakh rows and 23 columns, offering detailed insights into housing market trends across various Indian states. It includes attributes related to property types, pricing, location, and amenities, making it suitable for analysis ranging from basic descriptive statistics to advanced machine learning applications.
-
-**Note:** Due to computational limitations, this project utilized a sample of approximately 100,000 rows from the original dataset.
-
-## Business Applications
-
-This house price prediction model can be valuable for:
-
-- 🏘️ **Real Estate Agents**: Quickly estimate property values based on location and features
-- 💰 **Property Investors**: Make data-driven decisions for investment opportunities across Indian states
-- 🏦 **Banks & Lenders**: Assist in property valuation for mortgage and loan assessments
-- 🏗️ **Property Developers**: Analyze market trends and optimize pricing strategies for new developments
-- 🏡 **Home Buyers**: Get fair price estimates before making purchase decisions
-- 📊 **Market Analysts**: Study housing market trends and price patterns across different Indian regions
-
-The model's high accuracy (99.6% R² score with XGBoost) makes it a reliable tool for stakeholders in the Indian real estate market to make informed decisions.
-
-## Methodology
-
-The following steps were undertaken in this project:
-
-1. **Exploratory Data Analysis (EDA):**  Initial exploration of the dataset to understand its structure, identify patterns, and gain insights into the features.
-2. **Data Preprocessing:**
-    * **Dropping Unnecessary Columns:** Identification and removal of irrelevant or redundant columns.
-    * **Ordinal Encoding:** Encoding of ordinal categorical features into numerical representations.
-    * **Data Sampling:**  Selection of a subset of approximately 100,000 rows from the dataset due to limited computational resources.
-    * **One-Hot Encoding:** Application of One-Hot Encoding using `DictVectorizer` to convert remaining categorical features into a numerical format suitable for machine learning models.
-3. **Model Training and Evaluation:**
-    * Training of the following regression models:
-        * Linear Regression
-        * Decision Tree
-        * Random Forest
-        * XGBoost
-    * Parameter tuning for each model to optimize performance.
-    * Grid Search was specifically used to fine-tune the hyperparameters of the XGBoost model.
-4. **Performance Evaluation:**  Evaluation of each trained model using the following metrics:
-    * **Mean Absolute Error (MAE):** Average absolute difference between the predicted and actual prices.
-    * **Mean Squared Error (MSE):** Average of the squared differences between the predicted and actual prices.
-    * **Root Mean Squared Error (RMSE):** Square root of the MSE, providing an error metric in the original unit of the target variable.
-    * **R-squared (R2):**  A statistical measure representing the proportion of the variance in the dependent variable that is predictable from the independent variables.
-
-## Results
-
-The following performance metrics were achieved by the trained models:
-
-| Model | MAE | MSE | RMSE | R² Score |
-|-------|-----|-----|------|----------|
-| Linear Regression | 81.75 | 10364.25 | 101.80 | 0.488 |
-| Decision Tree | 7.70 | 96.81 | 9.84 | 0.995 |
-| Random Forest | 50.60 | 3910.55 | 62.53 | 0.807 |
-| XGBoost | 6.96 | 78.74 | 8.87 | 0.996 |
-
-### Bar Plot Comparison of Models
-
-![Model's Result Using Bar Plot](https://github.com/izaanz/ML-Indian-House-Prediction/blob/main/img/model_comparison_bar_chart.png)
-
-### Radar Chart Models Comparison
-![Model's Result Using Radar](https://github.com/izaanz/ML-Indian-House-Prediction/blob/main/img/model_comparison_radar_chart.png)
-
-## How to Use the Model
-
-### Prerequisites
-
-- **Pipenv:** For managing Python environments and dependencies.
-- **Docker:** For containerized deployment of the model.
-- **Flask:** For app/webservice.
-
-### Running Locally
-
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/izaanz/ML-Indian-House-Prediction
-   navigate to the cloned directory
-   ```
-
-2. **Setup Environment:**
-   ```bash
-   pipenv install
-   pipenv shell
-   ```
-
-3. **Run the Model:**
-   
-   Note: You may have to run `python train.py` if the model_.bin doesn't validate on your end.
-   
-   ```bash
-   python predict.py
-   ```
-   This will start a local server where you can send requests to get predictions.
-
-4. **Testing Predictions:**
-
-   You can use predict_test.py to test the predictions.
-   
-   ```bash
-   python predict_test.py
-   ```
-   This will return a predicted house priced based on the stored data in the file.
-
-### Docker Deployment
-
-To deploy using Docker:
-
-1. **Build the Docker Image:**
-   ```bash
-   docker build -t house-price-predictor .
-   ```
-
-2. **Run the Docker Container:**
-   ```bash
-   docker run -p 9696:9696 house-price-predictor
-   ```
-
-   The model will be accessible at `http://localhost:9696/predict`.
-
-This Dockerfile sets up a Python 3.11 environment, installs Pipenv, and copies the required files into the container. It then exposes port 9696 and sets up the Waitress server to serve the model.
-
-
-### Interacting with the Model
-
-When testing the model, you can use the following JSON structure for a student's data:
-
-
-```json
-{
-'State': 'telangana',
- 'City': 'warangal',
- 'Property_Type': 0.0,
- 'BHK': 1,
- 'Size_in_SqFt': 2059,
- 'Price_per_SqFt': 0.24,
- 'Year_Built': 1995,
- 'Furnished_Status': 2.0,
- 'Floor_No': 0,
- 'Total_Floors': 26,
- 'Age_of_Property': 30,
- 'Nearby_Schools': 7,
- 'Nearby_Hospitals': 6,
- 'Public_Transport_Accessibility': 0.0,
- 'Parking_Space': 'no',
- 'Security': 0.0,
- 'Amenities': 'garden, pool, gym, playground, clubhouse',
- 'Facing': 2.0,
- 'Owner_Type': 'broker',
- 'Availability_Status': 'under_construction'
-}
-```
-Use predict_test.py to send test queries to your model:
-
-- Use `predict_test.py` to send test queries to your model:
-  ```bash
-  python predict_test.py
-  ```
-
-  Modify this script to format your input data as per the model's expectations.
-
-## Deployed on Cloud
-
-This is a machine learning-based web application for predicting house prices in India. The app is powered by a regression model that takes various house attributes (such as location, size, number of rooms, etc.) to predict the price of a house.
-
-The app is deployed on the cloud and can be accessed through the following link:
-
-https://ml-indian-house-prediction.onrender.com/
-
-![Cloud Deployment](https://github.com/izaanz/ML-Indian-House-Prediction/blob/main/img/frontend.png)
-
-You can input house details into the app, and it will generate a predicted price based on the trained model.
-
-## Contributions
-
-Contributions to improve the model, enhance feature sets, or optimize the deployment process are welcome. Please submit a pull request with a clear description of your changes.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- Special thanks to Kaggle for providing the dataset.
+An academically rigorous, end-to-end Machine Learning property appraisal system built for Bengaluru real estate. Features validated gradient boosting regression, out-of-fold calibrated empirical prediction intervals, and TreeSHAP feature-level explainability.
 
 ---
 
-This README provides a comprehensive guide to understanding, using, and deploying the Depression Prediction Model. For any issues or further information, feel free to open an issue in this repository.
+## 1. Project Overview
+
+Predicting residential property prices requires accounting for spatial premiums, physical dimensions, structural configurations, and market uncertainty. This project implements an intelligent, transparent valuation engine:
+* **Point Valuation:** Predicts expected property prices in **Lakhs (INR)** using an optimized **XGBoost Regressor**.
+* **Empirical Prediction Interval:** Calibrated from out-of-fold cross-validation residuals ($\pm ₹69.00\text{ Lakhs}$ margin, achieving **89.23% independent test coverage**).
+* **Explainable AI (TreeSHAP):** Decomposes every individual property valuation into seven human-understandable real-estate contribution drivers relative to the citywide baseline ($E[f(x)] = ₹111.71\text{ Lakhs}$).
+* **Production Web Interface:** Interactive Flask application with autocomplete for 197 frequent Bengaluru localities and server-side input validation.
+
+---
+
+## 2. Dataset & Target Leakage Audit
+
+### Dataset Transition
+The project utilizes the authentic **Bengaluru House Price Dataset** (`data/bengaluru_house_prices.csv`, 13,320 listings from real-world 99acres and Housing.com transactions).
+
+### Rejection of Original Synthetic Dataset
+The repository previously included a 250,000-row synthetic dataset (`data/india_housing_prices.csv`) which was formally audited and rejected:
+1. **Severe Target Leakage:** The original feature matrix $X$ retained `Price_per_SqFt`. Because $\text{Price} \approx \text{Size} \times \text{Price\_per\_SqFt}$, tree models trivially learned arithmetic multiplication, artificially inflating $R^2$ to 99.6%.
+2. **Synthetic Random Noise:** Removing `Price_per_SqFt` caused all ML models to score $R^2 < 0$. Statistical tests (Kolmogorov-Smirnov $p = 0.019$, kurtosis = -1.20) confirmed that `Price_in_Lakhs` was purely uniform random noise ($U(10, 500)$) with zero correlation to any property feature.
+3. **Physical Contradictions:** 46.5% of rows featured $\text{Floor\_No} > \text{Total\_Floors}$ (e.g., Floor 22 in a 1-story building).
+
+The original CSV is preserved solely as an audit reference demonstrating why it was rejected.
+
+---
+
+## 3. Data Preprocessing Architecture
+
+Data cleaning and preprocessing follow a reproducible Scikit-Learn pipeline without manual dataset tampering:
+
+1. **Deduplication:** Removed 529 exact duplicate listings ($13,320 \to 12,791$).
+2. **Missing Value Handling:** Dropped 17 records with missing core location/size.
+3. **Square Footage Normalization:** Handled ranged entries (e.g. `'2100 - 2850'` $\to 2,475$) and converted units (`Sq. Meter`, `Sq. Yards`, `Acres`, `Guntha`, `Cent`).
+4. **Physical Inconsistency Removal:**
+   * Removed 738 records with $\frac{\text{total\_sqft}}{\text{bhk}} < 300\text{ sqft}$ (unrealistic layout error).
+   * Removed 9 records where $\text{bath} > \text{bhk} + 2$.
+5. **Final Cleaned Dataset:** **12,025 rows** (Train: 9,620 | Held-out Test: 2,405).
+6. **Feature Exclusion:** Dropped `society` due to **41.31% missingness** (5,502 missing) and extreme cardinality (2,688 societies).
+7. **Rare Category Grouping:** Locations with fewer than 10 training listings are grouped into `'other'` via a custom `RareCategoryGrouper` to prevent overfitting on long-tail neighborhoods.
+
+---
+
+## 4. Model Benchmarking & Selection
+
+Across identical 5-fold cross-validation splits and an untouched 2,405-row test set:
+
+| Model | 5-Fold CV Mean $R^2$ | Test $R^2$ Score | Test MAE (Lakhs) | Test RMSE (Lakhs) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Dummy Regressor (Mean)** | -0.0007 | -0.0006 | ₹77.63 L | ₹172.07 L |
+| **Ridge Regression** | 0.3917 | 0.2981 | ₹51.86 L | ₹144.12 L |
+| **Decision Tree Regressor** | 0.4076 | 0.4642 | ₹39.42 L | ₹125.92 L |
+| **Random Forest Regressor** | 0.5676 | 0.5998 | ₹36.16 L | ₹108.83 L |
+| **Gradient Boosting Regressor**| 0.5776 | 0.6248 | ₹35.27 L | ₹105.37 L |
+| **XGBoost Regressor (Champion)**| **0.5839** | **0.6465** | **₹34.93 L** | **₹102.28 L** |
+
+### Champion Model Specification
+* **Algorithm:** Extreme Gradient Boosting (`XGBRegressor`)
+* **Hyperparameters:** `n_estimators=100`, `max_depth=6`, `learning_rate=0.1`, `random_state=42`
+* **Artifact:** Saved as a complete self-contained pipeline in `model.bin` (293 KB).
+
+---
+
+## 5. Explainable AI (TreeSHAP)
+
+The explainer computes Shapley values from cooperative game theory:
+$$\hat{y}(x) \approx E[f(X)] + \sum_{i=1}^{M} \phi_i(x)$$
+where $E[f(X)] = \mathbf{₹111.71\text{ Lakhs}}$ represents the citywide baseline expected model output.
+
+### Global Market Drivers (Mean Absolute SHAP Magnitude)
+1. **Total Area (Square Feet):** ₹56.89 Lakhs
+2. **Location Premium:** ₹17.61 Lakhs
+3. **Area Type (Plot vs. Built-up):** ₹10.35 Lakhs
+4. **Bathrooms:** ₹7.44 Lakhs
+5. **Bedrooms (BHK):** ₹5.32 Lakhs
+6. **Balconies:** ₹1.58 Lakhs
+7. **Availability Status:** ₹1.18 Lakhs
+
+> **Academic Note on Causality:** SHAP values represent mathematical feature attribution within the trained ML model, not causal real-world market impact.
+
+---
+
+## 6. Uncertainty Calibration (Empirical Prediction Interval)
+
+Instead of assuming parametric normality ($y \pm 1.96 \times \text{RMSE}$), the system calculates non-parametric empirical intervals:
+* **Calibration Source:** 9,620 out-of-fold training residuals from 5-fold cross-validation.
+* **Frozen 90% Margin:** $\delta = \mathbf{\pm ₹69.00\text{ Lakhs}}$
+* **Independent Test Evaluation (2,405 rows):** **89.23% actual coverage** (2,146 / 2,405 covered).
+* **Non-Negativity:** $\text{Lower Bound} = \max(0.0, \; \hat{y} - 69.00)$.
+
+### Price Segment Coverage (Heteroscedasticity Analysis)
+* **Budget (< ₹60L, $n=916$):** 99.67% test coverage (Mean error: ₹11.61L)
+* **Mid-Market (₹60L–₹120L, $n=868$):** 97.00% test coverage (Mean error: ₹18.87L)
+* **Premium (₹120L–₹250L, $n=419$):** 75.89% test coverage (Mean error: ₹53.76L)
+* **Luxury (> ₹250L, $n=202$):** 36.14% test coverage (Mean error: ₹170.69L)
+
+*A single global residual interval provides conservative over-coverage on standard homes, but under-covers high-value luxury properties due to expanding variance.*
+
+---
+
+## 7. How to Run the Application
+
+### Prerequisites
+* Python 3.10+
+* Virtual environment (recommended)
+
+### Installation
+```bash
+git clone https://github.com/izaanz/ML-Indian-House-Prediction.git
+cd ML-Indian-House-Prediction
+pip install -r requirements.txt
+```
+
+### Running the Web Service
+```bash
+python predict.py
+```
+Open your browser and navigate to:
+```
+http://localhost:9696
+```
+
+### Running the API Test Suite
+In a separate terminal:
+```bash
+python predict_test.py
+```
+
+---
+
+## 8. Project Structure
+
+```
+.
+├── data/
+│   ├── bengaluru_house_prices.csv   # Primary authentic Bengaluru dataset (13,320 rows)
+│   ├── india_housing_prices.csv       # Rejected synthetic reference dataset (250,000 rows)
+│   └── README.md
+├── img/
+│   ├── shap_global_summary.png        # Global feature importance chart
+│   ├── shap_local_whitefield.png      # Local explanation breakdown (Whitefield)
+│   └── shap_local_indiranagar.png    # Local explanation breakdown (Indiranagar)
+├── src/
+│   ├── __init__.py
+│   ├── transformers.py                # RareCategoryGrouper custom transformer
+│   ├── explainability.py              # TreeSHAP explainer engine & visualizer
+│   └── uncertainty.py                 # Out-of-fold calibrated uncertainty engine
+├── templates/
+│   └── index.html                     # Web valuation interface
+├── model.bin                          # Production ML pipeline artifact (293 KB)
+├── predict.py                         # Flask backend application
+├── predict_test.py                    # Test suite for API endpoints
+├── requirements.txt                   # Project dependencies
+└── README.md                          # Project documentation
+```
+
+---
+
+## 9. Academic Disclaimer
+
+The valuation point estimates and empirical prediction intervals generated by this system are machine learning outputs trained on historical Bengaluru real estate transactions. They serve as statistical guidance and do not constitute a formal legal appraisal, bank lending guarantee, or commercial selling price commitment.

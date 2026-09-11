@@ -7,3 +7,5 @@ xgboost
 requests
 flask
 waitress
+shap
+flask-cors

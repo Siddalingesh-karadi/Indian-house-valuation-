@@ -3,214 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian House Price Predictor | Github/izaanz</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Intelligent Property Valuation | Bengaluru Real Estate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            padding: 20px;
-            background-color: #f8f9fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            padding: 40px 15px;
         }
-        .prediction-form {
-            max-width: 800px;
+        .main-card {
+            max-width: 960px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
         }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #e9ecef;
-            border-radius: 5px;
+        .header-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 35px 30px;
+            text-align: center;
+        }
+        .form-section {
+            padding: 35px 40px;
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: #4a5568;
+            margin-bottom: 6px;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.15);
+        }
+        .btn-predict {
+            background: #1e3c72;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-size: 1rem;
+        }
+        .btn-predict:hover {
+            background: #162c54;
+            transform: translateY(-1px);
+        }
+        .result-container {
             display: none;
+            padding: 30px 40px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        .valuation-badge {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .point-price {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+        .range-price {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #475569;
+        }
+        .shap-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+        .driver-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .driver-row:last-child {
+            border-bottom: none;
+        }
+        .driver-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            flex: 2;
+        }
+        .driver-bar-container {
+            flex: 3;
+            margin: 0 15px;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .driver-bar {
+            height: 100%;
+            border-radius: 5px;
+        }
+        .driver-bar.positive {
+            background: #10b981;
+        }
+        .driver-bar.negative {
+            background: #ef4444;
+        }
+        .driver-impact {
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 100px;
+            text-align: right;
+        }
+        .driver-impact.positive {
+            color: #059669;
+        }
+        .driver-impact.negative {
+            color: #dc2626;
+        }
+        .metadata-box {
+            font-size: 0.85rem;
+            color: #64748b;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+        }
+        .disclaimer-text {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 15px;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="prediction-form">
-            <h2 class="mb-4 text-center">Indian House Price Predictor</h2>
-            <form id="predictionForm">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="state" name="State" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="city" class="form-label">City</label>
-                        <input type="text" class="form-control" id="city" name="City" required>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="property_type" class="form-label">Property Type</label>
-                        <select class="form-select" id="property_type" name="Property_Type">
-                            <option value="0">Apartment</option>
-                            <option value="1">Independent House</option>
+<div class="container">
+    <div class="main-card">
+        <!-- Header -->
+        <div class="header-section">
+            <h2 class="mb-2 fw-bold">Bengaluru Residential Property Valuation Engine</h2>
+            <p class="mb-0 opacity-75">Intelligent property appraisal powered by Machine Learning, Out-of-Fold Uncertainty Calibration, and TreeSHAP Explainability</p>
+        </div>
+
+        <!-- Valuation Form -->
+        <div class="form-section">
+            <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+
+            <form id="valuationForm">
+                <div class="row g-3">
+                    <!-- Location with Datalist Autocomplete -->
+                    <div class="col-md-6">
+                        <label for="locationInput" class="form-label">Neighborhood / Locality</label>
+                        <input type="text" class="form-control" id="locationInput" name="location" list="locationList" 
+                               placeholder="Type or select (e.g. Whitefield, Indiranagar)" required>
+                        <datalist id="locationList">
+                            {% for loc in locations %}
+                            <option value="{{ loc }}"></option>
+                            {% endfor %}
+                        </datalist>
+                        <div class="form-text">Search among 197 frequent localities or type any unlisted neighborhood.</div>
+                    </div>
+
+                    <!-- Area Type -->
+                    <div class="col-md-3">
+                        <label for="areaTypeSelect" class="form-label">Area Type</label>
+                        <select class="form-select" id="areaTypeSelect" name="area_type" required>
+                            <option value="Super built-up Area" selected>Super built-up Area</option>
+                            <option value="Built-up Area">Built-up Area</option>
+                            <option value="Plot Area">Plot Area</option>
+                            <option value="Carpet Area">Carpet Area</option>
                         </select>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="bhk" class="form-label">BHK</label>
-                        <input type="number" class="form-control" id="bhk" name="BHK" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="size" class="form-label">Size (SqFt)</label>
-                        <input type="number" class="form-control" id="size" name="Size_in_SqFt" required>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="year_built" class="form-label">Year Built</label>
-                        <input type="number" class="form-control" id="year_built" name="Year_Built" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="furnished_status" class="form-label">Furnished Status</label>
-                        <select class="form-select" id="furnished_status" name="Furnished_Status">
-                            <option value="0">Unfurnished</option>
-                            <option value="1">Semi-Furnished</option>
-                            <option value="2">Fully Furnished</option>
+                    <!-- Availability -->
+                    <div class="col-md-3">
+                        <label for="availabilitySelect" class="form-label">Availability Status</label>
+                        <select class="form-select" id="availabilitySelect" name="availability" required>
+                            <option value="Ready To Move" selected>Ready To Move</option>
+                            <option value="Under Construction">Under Construction</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="floor_no" class="form-label">Floor Number</label>
-                        <input type="number" class="form-control" id="floor_no" name="Floor_No" required>
+                    <!-- Total Square Feet -->
+                    <div class="col-md-3">
+                        <label for="totalSqftInput" class="form-label">Total Area (Sq Ft)</label>
+                        <input type="number" class="form-control" id="totalSqftInput" name="total_sqft" 
+                               placeholder="e.g. 1500" min="100" max="50000" step="1" required>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="total_floors" class="form-label">Total Floors</label>
-                        <input type="number" class="form-control" id="total_floors" name="Total_Floors" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="age" class="form-label">Age of Property</label>
-                        <input type="number" class="form-control" id="age" name="Age_of_Property" required>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="nearby_schools" class="form-label">Nearby Schools</label>
-                        <input type="number" class="form-control" id="nearby_schools" name="Nearby_Schools" required>
+                    <!-- BHK (Bedrooms) -->
+                    <div class="col-md-3">
+                        <label for="bhkInput" class="form-label">Bedrooms (BHK)</label>
+                        <input type="number" class="form-control" id="bhkInput" name="bhk" 
+                               placeholder="e.g. 3" min="1" max="10" step="1" required>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="nearby_hospitals" class="form-label">Nearby Hospitals</label>
-                        <input type="number" class="form-control" id="nearby_hospitals" name="Nearby_Hospitals" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="transport" class="form-label">Public Transport Accessibility</label>
-                        <select class="form-select" id="transport" name="Public_Transport_Accessibility">
-                            <option value="0">Poor</option>
-                            <option value="1">Good</option>
-                            <option value="2">Excellent</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="parking" class="form-label">Parking Space</label>
-                        <select class="form-select" id="parking" name="Parking_Space">
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
+                    <!-- Bathrooms -->
+                    <div class="col-md-3">
+                        <label for="bathInput" class="form-label">Bathrooms</label>
+                        <input type="number" class="form-control" id="bathInput" name="bath" 
+                               placeholder="e.g. 2" min="1" max="10" step="1" required>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="security" class="form-label">Security</label>
-                        <select class="form-select" id="security" name="Security">
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="facing" class="form-label">Facing</label>
-                        <select class="form-select" id="facing" name="Facing">
-                            <option value="0">North</option>
-                            <option value="1">South</option>
-                            <option value="2">East</option>
-                            <option value="3">West</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="owner_type" class="form-label">Owner Type</label>
-                        <select class="form-select" id="owner_type" name="Owner_Type">
-                            <option value="owner">Owner</option>
-                            <option value="broker">Broker</option>
-                        </select>
+                    <!-- Balconies -->
+                    <div class="col-md-3">
+                        <label for="balconyInput" class="form-label">Balconies</label>
+                        <input type="number" class="form-control" id="balconyInput" name="balcony" 
+                               placeholder="e.g. 2" min="0" max="5" step="1" required>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="availability" class="form-label">Availability Status</label>
-                        <select class="form-select" id="availability" name="Availability_Status">
-                            <option value="ready_to_move">Ready to Move</option>
-                            <option value="under_construction">Under Construction</option>
-                        </select>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" id="submitBtn" class="btn btn-predict">
+                            <span id="btnText">Calculate Property Valuation</span>
+                            <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="amenities" class="form-label">Amenities</label>
-                    <input type="text" class="form-control" id="amenities" name="Amenities" 
-                           placeholder="e.g., garden, pool, gym, playground, clubhouse">
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Predict Price</button>
                 </div>
             </form>
+        </div>
 
-            <div class="result mt-4" id="result">
-                <h4 class="text-center">Predicted House Price (in lakhs):</h4>
-                <h3 class="text-center" id="predicted-price"></h3>
+        <!-- Result Container -->
+        <div id="resultContainer" class="result-container">
+            <!-- Location Note if Rare -->
+            <div id="rareLocationAlert" class="alert alert-warning d-none" role="alert">
+                <strong>Locality Notice:</strong> <span id="rareLocationText"></span>
+            </div>
+
+            <!-- Point Prediction & Empirical Range -->
+            <div class="valuation-badge">
+                <div class="text-uppercase tracking-wide text-muted small fw-bold mb-1">Estimated Property Valuation</div>
+                <div class="point-price" id="predictedPrice">₹0.00 Lakhs</div>
+                <div class="range-price" id="predictionRange">Empirical Prediction Interval: ₹0.00 L – ₹0.00 L</div>
+                <div class="text-muted small mt-1" id="intervalWidthText">Range Width: ±₹69.00 Lakhs</div>
+            </div>
+
+            <!-- SHAP Explainability Breakdown -->
+            <div class="shap-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-bold">Why the Model Predicted This Value</h5>
+                    <span class="badge bg-light text-dark border" id="baseValueBadge">City Baseline: ₹111.71L</span>
+                </div>
+                <p class="text-muted small mb-3">
+                    Shapley Additive exPlanations (TreeSHAP) allocate marginal contributions to each feature relative to the citywide baseline expected price.
+                </p>
+
+                <!-- Contributing Factors List -->
+                <div id="shapDriversList"></div>
+
+                <div class="alert alert-light border mt-3 mb-0 small text-muted">
+                    <strong>Interpretation Note:</strong> SHAP values explain how the machine learning model arrived at this valuation. They represent statistical model feature attributions and do not establish causal relationships in the real housing market.
+                </div>
+            </div>
+
+            <!-- Model & Rigor Metadata -->
+            <div class="metadata-box">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>ML Model:</strong> <span id="metaModel">XGBoost Regressor</span><br>
+                        <strong>Out-of-Sample Performance:</strong> Test R² = 0.6465 | MAE = ₹34.93 Lakhs
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <strong>Uncertainty Calibration:</strong> Out-of-fold 5-fold CV (9,620 samples)<br>
+                        <strong>Evaluation Coverage:</strong> 89.23% verified on 2,405 test properties
+                    </div>
+                </div>
+                <div class="disclaimer-text border-top pt-2 mt-2" id="disclaimerText"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                // Convert numeric strings to numbers where appropriate
-                if (!isNaN(value) && key !== 'State' && key !== 'City' && 
-                    key !== 'Parking_Space' && key !== 'Owner_Type' && 
-                    key !== 'Availability_Status' && key !== 'Amenities') {
-                    data[key] = Number(value);
-                } else {
-                    data[key] = value;
-                }
-            }
+<script>
+document.getElementById('valuationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-            try {
-                const response = await fetch('http://127.0.0.1:9696/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+    const form = e.target;
+    const errorAlert = document.getElementById('errorAlert');
+    const resultContainer = document.getElementById('resultContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
 
-                const result = await response.json();
-                
-                // Show the result div
-                document.getElementById('result').style.display = 'block';
-                // Format the price with commas and display
-                document.getElementById('predicted-price').textContent = 
-                    '₹ ' + result.price.toLocaleString('en-IN');
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error predicting price. Please try again.');
-            }
+    errorAlert.classList.add('d-none');
+    errorAlert.textContent = '';
+
+    const payload = {
+        location: form.location.value.trim(),
+        area_type: form.area_type.value,
+        availability: form.availability.value,
+        total_sqft: parseFloat(form.total_sqft.value),
+        bhk: parseInt(form.bhk.value),
+        bath: parseFloat(form.bath.value),
+        balcony: parseFloat(form.balcony.value)
+    };
+
+    // Client-side quick check
+    if (isNaN(payload.total_sqft) || payload.total_sqft <= 0) {
+        errorAlert.textContent = "Please enter a valid positive square footage.";
+        errorAlert.classList.remove('d-none');
+        return;
+    }
+
+    // Set Loading UI
+    btnText.textContent = "Computing Valuation & SHAP Analysis...";
+    btnSpinner.classList.remove('d-none');
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Valuation request failed. Please check inputs.");
+        }
+
+        // 1. Populate Point Prediction & Empirical Range
+        document.getElementById('predictedPrice').textContent = `₹ ${data.prediction.toLocaleString('en-IN', {minimumFractionDigits: 2})} Lakhs`;
+        document.getElementById('predictionRange').textContent = `Empirical Prediction Interval: ₹ ${data.lower_bound.toLocaleString('en-IN', {minimumFractionDigits: 2})} L – ₹ ${data.upper_bound.toLocaleString('en-IN', {minimumFractionDigits: 2})} L`;
+        document.getElementById('intervalWidthText').textContent = `Range Width: ₹ ${data.interval_width.toFixed(2)} Lakhs (Frozen Margin: ± ₹${data.uncertainty_delta.toFixed(2)} Lakhs)`;
+
+        // 2. Rare Location Handling
+        const rareAlert = document.getElementById('rareLocationAlert');
+        if (data.is_rare_location) {
+            document.getElementById('rareLocationText').textContent = data.location_note;
+            rareAlert.classList.remove('d-none');
+        } else {
+            rareAlert.classList.add('d-none');
+        }
+
+        // 3. Populate SHAP Breakdown
+        const shap = data.shap_explanation;
+        document.getElementById('baseValueBadge').textContent = `City Baseline E[f(x)]: ₹${shap.base_value_lakhs.toFixed(2)}L`;
+
+        const driversContainer = document.getElementById('shapDriversList');
+        driversContainer.innerHTML = '';
+
+        // Find max impact magnitude to scale the bars
+        const maxImpact = Math.max(...shap.feature_contributions.map(d => Math.abs(d.shap_value)), 1.0);
+
+        // Sort descending by value (positive on top)
+        const sortedContributions = [...shap.feature_contributions].sort((a, b) => b.shap_value - a.shap_value);
+
+        sortedContributions.forEach(driver => {
+            const isPos = driver.shap_value >= 0;
+            const absVal = Math.abs(driver.shap_value);
+            const barWidth = Math.min(100, (absVal / maxImpact) * 100);
+
+            const row = document.createElement('div');
+            row.className = 'driver-row';
+            row.innerHTML = `
+                <div class="driver-name">${driver.feature}</div>
+                <div class="driver-bar-container">
+                    <div class="driver-bar ${isPos ? 'positive' : 'negative'}" style="width: ${barWidth}%"></div>
+                </div>
+                <div class="driver-impact ${isPos ? 'positive' : 'negative'}">
+                    ${isPos ? '+' : '-'}₹${absVal.toFixed(2)}L
+                </div>
+            `;
+            driversContainer.appendChild(row);
+        });
+
+        // 4. Metadata & Disclaimers
+        document.getElementById('disclaimerText').textContent = data.disclaimer;
+
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        errorAlert.textContent = err.message;
+        errorAlert.classList.remove('d-none');
+    } finally {
+        btnText.textContent = "Calculate Property Valuation";
+        btnSpinner.classList.add('d-none');
+        submitBtn.disabled = false;
+    }
+});
+</script>
+
 </body>
 </html>
