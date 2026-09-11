@@ -1,0 +1,121 @@
+# ==============================================================================
+# Git Ignore Configuration - Professional Python + Flask + ML Stack
+# Project: Bengaluru Property Valuation (ML-Indian-House-Prediction-main)
+# ==============================================================================
+
+# 1. Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 2. Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 3. Jupyter Notebook Checkpoints & Cache
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# 4. macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# 5. IDEs and Code Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# 6. Testing, Quality & Coverage Tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+htmlcov/
+.tox/
+
+# 7. Environment Variables & Secrets
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+!.env.example
+
+# 8. Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 9. Temporary, Backup & Patch Files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+
+# 10. Generated Output Directories
+outputs/
+reports/generated/
+plots/generated/
+
+# 11. Legacy / Obsolete Model Backups
+model_legacy_backup.bin
+
+# ==============================================================================
+# Explicit Project Allowlist (Guaranteed Tracked Assets)
+# ==============================================================================
+!model.bin
+!data/bengaluru_house_prices.csv
+!data/india_housing_prices.csv
+!data/README.md
+!src/
+!src/**/*.py
+!templates/
+!templates/**
+!img/
+!img/**
+!predict.py
+!predict_test.py
+!train.py
+!notebook.ipynb
+!requirements.txt
+!README.md
+!Dockerfile
+!Pipfile
+!Pipfile.lock
+
+# Ensure python bytecode remains ignored even within tracked source directories
+**/__pycache__/
+**/*.py[cod]
