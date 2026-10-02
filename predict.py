@@ -128,6 +128,51 @@ def validate_property_input(data):
     }
     return cleaned, None
 
+def evaluate_single_property(cleaned_data):
+    """
+    Evaluates a single validated property through the uncertainty engine and SHAP explainer.
+    Returns a standardized dictionary without modifying model state.
+    """
+    # Check if the requested location is frequent or rare
+    is_rare = cleaned_data['location'] not in rare_grouper.frequent_categories_
+
+    # 1. Point Prediction & Empirical Prediction Interval
+    uncertainty_res = uncertainty_engine.predict_with_interval(cleaned_data, coverage_level=0.90)
+
+    # 2. Local SHAP Explanation
+    shap_res = explainer_engine.explain_prediction(cleaned_data, top_n=5)
+
+    return {
+        "prediction": uncertainty_res["prediction"],
+        "lower_bound": uncertainty_res["lower_bound"],
+        "upper_bound": uncertainty_res["upper_bound"],
+        "interval_width": uncertainty_res["interval_width"],
+        "uncertainty_delta": uncertainty_res["uncertainty_delta_lakhs"],
+        "coverage_level": 0.90,
+        "is_rare_location": is_rare,
+        "location_input": cleaned_data["location"],
+        "location_note": (
+            "Location is not frequently represented in the training data (less than 10 historical records); "
+            "the model evaluated this property using the generalized citywide location category."
+            if is_rare else "Location recognized in primary training distribution."
+        ),
+        "shap_explanation": {
+            "base_value_lakhs": shap_res["base_value_lakhs"],
+            "reconstructed_price_lakhs": shap_res["reconstructed_price_lakhs"],
+            "top_positive_contributors": shap_res["top_positive_contributors"],
+            "top_negative_contributors": shap_res["top_negative_contributors"],
+            "feature_contributions": shap_res["feature_contributions"]
+        },
+        "model_metadata": {
+            "algorithm": "XGBoost Regressor (100 estimators, max_depth=6)",
+            "dataset": "Bengaluru House Prices (12,025 cleaned records)",
+            "test_r2": 0.6465,
+            "test_mae_lakhs": 34.93,
+            "uncertainty_calibration": "Out-of-fold cross-validation on 9,620 training records (89.23% independent test coverage)"
+        },
+        "disclaimer": uncertainty_res["disclaimer"]
+    }
+
 @app.route("/", methods=["GET"])
 def index():
     return render_template("index.html", locations=FREQUENT_LOCATIONS)
@@ -151,51 +196,108 @@ def predict():
             logger.warning("Validation failure: %s", error)
             return jsonify({"error": error}), 400
 
-        # Check if the requested location is frequent or rare
-        is_rare = cleaned_data['location'] not in rare_grouper.frequent_categories_
-
-        # 1. Point Prediction & Empirical Prediction Interval
-        uncertainty_res = uncertainty_engine.predict_with_interval(cleaned_data, coverage_level=0.90)
-
-        # 2. Local SHAP Explanation
-        shap_res = explainer_engine.explain_prediction(cleaned_data, top_n=5)
-
-        response = {
-            "prediction": uncertainty_res["prediction"],
-            "lower_bound": uncertainty_res["lower_bound"],
-            "upper_bound": uncertainty_res["upper_bound"],
-            "interval_width": uncertainty_res["interval_width"],
-            "uncertainty_delta": uncertainty_res["uncertainty_delta_lakhs"],
-            "coverage_level": 0.90,
-            "is_rare_location": is_rare,
-            "location_input": cleaned_data["location"],
-            "location_note": (
-                "Location is not frequently represented in the training data (less than 10 historical records); "
-                "the model evaluated this property using the generalized citywide location category."
-                if is_rare else "Location recognized in primary training distribution."
-            ),
-            "shap_explanation": {
-                "base_value_lakhs": shap_res["base_value_lakhs"],
-                "reconstructed_price_lakhs": shap_res["reconstructed_price_lakhs"],
-                "top_positive_contributors": shap_res["top_positive_contributors"],
-                "top_negative_contributors": shap_res["top_negative_contributors"],
-                "feature_contributions": shap_res["feature_contributions"]
-            },
-            "model_metadata": {
-                "algorithm": "XGBoost Regressor (100 estimators, max_depth=6)",
-                "dataset": "Bengaluru House Prices (12,025 cleaned records)",
-                "test_r2": 0.6465,
-                "test_mae_lakhs": 34.93,
-                "uncertainty_calibration": "Out-of-fold cross-validation on 9,620 training records (89.23% independent test coverage)"
-            },
-            "disclaimer": uncertainty_res["disclaimer"]
-        }
+        response = evaluate_single_property(cleaned_data)
         return jsonify(response), 200
 
     except Exception as e:
         logger.error("Unhandled prediction error: %s", str(e), exc_info=True)
         return jsonify({
             "error": "An internal server error occurred while processing the valuation request. Please verify inputs."
+        }), 500
+
+@app.route("/compare", methods=["POST"])
+def compare():
+    try:
+        payload = request.get_json(force=True, silent=True)
+        if payload is None:
+            payload = request.form.to_dict()
+
+        if not isinstance(payload, dict):
+            return jsonify({
+                "error": "Invalid payload format. Expected a JSON object with property_a and property_b."
+            }), 400
+
+        # Support nested {"property_a": {...}, "property_b": {...}} or flat prefixes
+        raw_a = payload.get("property_a")
+        raw_b = payload.get("property_b")
+
+        if raw_a is None or raw_b is None:
+            has_a_fields = any(k.startswith("a_") for k in payload.keys())
+            has_b_fields = any(k.startswith("b_") for k in payload.keys())
+            if has_a_fields and has_b_fields:
+                raw_a = {k[2:]: v for k, v in payload.items() if k.startswith("a_")}
+                raw_b = {k[2:]: v for k, v in payload.items() if k.startswith("b_")}
+            else:
+                return jsonify({
+                    "error": "Missing property specifications. Please provide both 'property_a' and 'property_b' objects."
+                }), 400
+
+        # Validate Property A
+        cleaned_a, error_a = validate_property_input(raw_a)
+        if error_a:
+            logger.warning("Property A validation failure: %s", error_a)
+            return jsonify({"error": f"Property A: {error_a}"}), 400
+
+        # Validate Property B
+        cleaned_b, error_b = validate_property_input(raw_b)
+        if error_b:
+            logger.warning("Property B validation failure: %s", error_b)
+            return jsonify({"error": f"Property B: {error_b}"}), 400
+
+        # Pass both properties through the existing validated ML pipeline
+        result_a = evaluate_single_property(cleaned_a)
+        result_b = evaluate_single_property(cleaned_b)
+
+        # Simple arithmetic comparison between the two model predictions
+        pred_a = result_a["prediction"]
+        pred_b = result_b["prediction"]
+        diff_b_minus_a = round(pred_b - pred_a, 2)
+        abs_diff = round(abs(pred_b - pred_a), 2)
+
+        if diff_b_minus_a > 0:
+            comparison_statement = f"Property B is estimated ₹{abs_diff:.2f} Lakhs higher than Property A by the valuation model."
+            higher_property = "Property B"
+        elif diff_b_minus_a < 0:
+            comparison_statement = f"Property A is estimated ₹{abs_diff:.2f} Lakhs higher than Property B by the valuation model."
+            higher_property = "Property A"
+        else:
+            comparison_statement = "Both properties have identical model valuation estimates."
+            higher_property = "Equal"
+
+        response = {
+            "property_a": result_a,
+            "property_b": result_b,
+            "comparison": {
+                "prediction_a": pred_a,
+                "prediction_b": pred_b,
+                "difference_b_minus_a_lakhs": diff_b_minus_a,
+                "absolute_difference_lakhs": abs_diff,
+                "higher_valuation_property": higher_property,
+                "comparison_statement": comparison_statement,
+                "interval_a": {
+                    "lower_bound": result_a["lower_bound"],
+                    "upper_bound": result_a["upper_bound"],
+                    "interval_width": result_a["interval_width"]
+                },
+                "interval_b": {
+                    "lower_bound": result_b["lower_bound"],
+                    "upper_bound": result_b["upper_bound"],
+                    "interval_width": result_b["interval_width"]
+                },
+                "explanation": (
+                    "Both properties were evaluated independently by the same trained XGBoost "
+                    "valuation model. The comparison shows the difference between the model's "
+                    "estimated prices and does not represent a guaranteed market price."
+                )
+            },
+            "disclaimer": result_a["disclaimer"]
+        }
+        return jsonify(response), 200
+
+    except Exception as e:
+        logger.error("Unhandled comparison error: %s", str(e), exc_info=True)
+        return jsonify({
+            "error": "An internal server error occurred while processing the property comparison. Please verify inputs."
         }), 500
 
 if __name__ == "__main__":

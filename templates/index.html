@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intelligent Property Valuation | Bengaluru Real Estate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -14,7 +14,7 @@
             padding: 40px 15px;
         }
         .main-card {
-            max-width: 960px;
+            max-width: 1080px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 12px;
@@ -28,20 +28,71 @@
             padding: 35px 30px;
             text-align: center;
         }
+        .mode-nav {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 40px 0;
+            display: flex;
+            gap: 12px;
+        }
+        .mode-tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .mode-tab-btn:hover {
+            color: #1e3c72;
+            background: #edf2f7;
+        }
+        .mode-tab-btn.active {
+            color: #1e3c72;
+            background: #ffffff;
+            border-color: #e2e8f0 #e2e8f0 #ffffff;
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.03);
+            margin-bottom: -1px;
+        }
         .form-section {
             padding: 35px 40px;
         }
+        .compare-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 22px;
+            height: 100%;
+        }
+        .compare-panel.panel-a {
+            border-top: 4px solid #1e3c72;
+        }
+        .compare-panel.panel-b {
+            border-top: 4px solid #0d9488;
+        }
+        .panel-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
         .form-label {
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: #4a5568;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #cbd5e1;
-            padding: 10px 14px;
-            font-size: 0.95rem;
+            padding: 9px 12px;
+            font-size: 0.92rem;
         }
         .form-control:focus, .form-select:focus {
             border-color: #2a5298;
@@ -62,6 +113,21 @@
             background: #162c54;
             transform: translateY(-1px);
         }
+        .btn-compare {
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            padding: 13px 30px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-size: 1.02rem;
+        }
+        .btn-compare:hover {
+            background: #0f766e;
+            transform: translateY(-1px);
+        }
         .result-container {
             display: none;
             padding: 30px 40px;
@@ -78,28 +144,103 @@
             margin-bottom: 25px;
         }
         .point-price {
-            font-size: 2.4rem;
+            font-size: 2.3rem;
             font-weight: 700;
             color: #1e3c72;
             margin-bottom: 5px;
         }
         .range-price {
-            font-size: 1.15rem;
+            font-size: 1.12rem;
             font-weight: 600;
             color: #475569;
+        }
+        .diff-callout-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08);
+        }
+        .diff-headline {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #065f46;
+            margin-bottom: 4px;
+        }
+        .diff-subtext {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #047857;
+        }
+        .comp-stat-pill {
+            display: inline-block;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 4px;
+        }
+        .vis-card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 22px 25px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 25px;
+        }
+        .vis-bar-row {
+            margin-bottom: 14px;
+        }
+        .vis-bar-row:last-child {
+            margin-bottom: 0;
+        }
+        .vis-bar-track {
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .vis-bar-fill-a {
+            background: #2563eb;
+            height: 100%;
+            border-radius: 6px 0 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .vis-bar-fill-b {
+            background: #0d9488;
+            height: 100%;
+            border-radius: 6px 0 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
         .shap-card {
             background: #ffffff;
             border-radius: 10px;
-            padding: 25px;
+            padding: 22px;
             border: 1px solid #e2e8f0;
             margin-bottom: 25px;
+            height: 100%;
         }
         .driver-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #f1f5f9;
         }
         .driver-row:last-child {
@@ -107,21 +248,21 @@
         }
         .driver-name {
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             flex: 2;
         }
         .driver-bar-container {
             flex: 3;
-            margin: 0 15px;
-            height: 10px;
+            margin: 0 12px;
+            height: 8px;
             background: #e2e8f0;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
             position: relative;
         }
         .driver-bar {
             height: 100%;
-            border-radius: 5px;
+            border-radius: 4px;
         }
         .driver-bar.positive {
             background: #10b981;
@@ -131,8 +272,8 @@
         }
         .driver-impact {
             font-weight: 700;
-            font-size: 0.95rem;
-            width: 100px;
+            font-size: 0.88rem;
+            width: 85px;
             text-align: right;
         }
         .driver-impact.positive {
@@ -164,139 +305,424 @@
         <!-- Header -->
         <div class="header-section">
             <h2 class="mb-2 fw-bold">Bengaluru Residential Property Valuation Engine</h2>
-            <p class="mb-0 opacity-75">Intelligent property appraisal powered by Machine Learning, Out-of-Fold Uncertainty Calibration, and TreeSHAP Explainability</p>
+            <p class="mb-0 opacity-75">Intelligent property appraisal & side-by-side comparison powered by Machine Learning, Out-of-Fold Uncertainty Calibration, and TreeSHAP Explainability</p>
         </div>
 
-        <!-- Valuation Form -->
-        <div class="form-section">
-            <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
-
-            <form id="valuationForm">
-                <div class="row g-3">
-                    <!-- Location with Datalist Autocomplete -->
-                    <div class="col-md-6">
-                        <label for="locationInput" class="form-label">Neighborhood / Locality</label>
-                        <input type="text" class="form-control" id="locationInput" name="location" list="locationList" 
-                               placeholder="Type or select (e.g. Whitefield, Indiranagar)" required>
-                        <datalist id="locationList">
-                            {% for loc in locations %}
-                            <option value="{{ loc }}"></option>
-                            {% endfor %}
-                        </datalist>
-                        <div class="form-text">Search among 197 frequent localities or type any unlisted neighborhood.</div>
-                    </div>
-
-                    <!-- Area Type -->
-                    <div class="col-md-3">
-                        <label for="areaTypeSelect" class="form-label">Area Type</label>
-                        <select class="form-select" id="areaTypeSelect" name="area_type" required>
-                            <option value="Super built-up Area" selected>Super built-up Area</option>
-                            <option value="Built-up Area">Built-up Area</option>
-                            <option value="Plot Area">Plot Area</option>
-                            <option value="Carpet Area">Carpet Area</option>
-                        </select>
-                    </div>
-
-                    <!-- Availability -->
-                    <div class="col-md-3">
-                        <label for="availabilitySelect" class="form-label">Availability Status</label>
-                        <select class="form-select" id="availabilitySelect" name="availability" required>
-                            <option value="Ready To Move" selected>Ready To Move</option>
-                            <option value="Under Construction">Under Construction</option>
-                        </select>
-                    </div>
-
-                    <!-- Total Square Feet -->
-                    <div class="col-md-3">
-                        <label for="totalSqftInput" class="form-label">Total Area (Sq Ft)</label>
-                        <input type="number" class="form-control" id="totalSqftInput" name="total_sqft" 
-                               placeholder="e.g. 1500" min="100" max="50000" step="1" required>
-                    </div>
-
-                    <!-- BHK (Bedrooms) -->
-                    <div class="col-md-3">
-                        <label for="bhkInput" class="form-label">Bedrooms (BHK)</label>
-                        <input type="number" class="form-control" id="bhkInput" name="bhk" 
-                               placeholder="e.g. 3" min="1" max="10" step="1" required>
-                    </div>
-
-                    <!-- Bathrooms -->
-                    <div class="col-md-3">
-                        <label for="bathInput" class="form-label">Bathrooms</label>
-                        <input type="number" class="form-control" id="bathInput" name="bath" 
-                               placeholder="e.g. 2" min="1" max="10" step="1" required>
-                    </div>
-
-                    <!-- Balconies -->
-                    <div class="col-md-3">
-                        <label for="balconyInput" class="form-label">Balconies</label>
-                        <input type="number" class="form-control" id="balconyInput" name="balcony" 
-                               placeholder="e.g. 2" min="0" max="5" step="1" required>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="col-12 mt-4">
-                        <button type="submit" id="submitBtn" class="btn btn-predict">
-                            <span id="btnText">Calculate Property Valuation</span>
-                            <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
-                        </button>
-                    </div>
-                </div>
-            </form>
+        <!-- Navigation Tabs -->
+        <div class="mode-nav">
+            <button type="button" class="mode-tab-btn active" data-target="singleValuationSection" id="tabSingleBtn">
+                Single Property Valuation
+            </button>
+            <button type="button" class="mode-tab-btn" data-target="compareValuationSection" id="tabCompareBtn">
+                Compare Two Properties
+            </button>
         </div>
 
-        <!-- Result Container -->
-        <div id="resultContainer" class="result-container">
-            <!-- Location Note if Rare -->
-            <div id="rareLocationAlert" class="alert alert-warning d-none" role="alert">
-                <strong>Locality Notice:</strong> <span id="rareLocationText"></span>
-            </div>
+        <!-- MODE 1: SINGLE VALUATION SECTION -->
+        <div id="singleValuationSection" class="tab-pane-content">
+            <!-- Valuation Form -->
+            <div class="form-section">
+                <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
 
-            <!-- Point Prediction & Empirical Range -->
-            <div class="valuation-badge">
-                <div class="text-uppercase tracking-wide text-muted small fw-bold mb-1">Estimated Property Valuation</div>
-                <div class="point-price" id="predictedPrice">₹0.00 Lakhs</div>
-                <div class="range-price" id="predictionRange">Empirical Prediction Interval: ₹0.00 L – ₹0.00 L</div>
-                <div class="text-muted small mt-1" id="intervalWidthText">Range Width: ±₹69.00 Lakhs</div>
-            </div>
+                <form id="valuationForm">
+                    <div class="row g-3">
+                        <!-- Location with Datalist Autocomplete -->
+                        <div class="col-md-6">
+                            <label for="locationInput" class="form-label">Neighborhood / Locality</label>
+                            <input type="text" class="form-control" id="locationInput" name="location" list="locationList" 
+                                   placeholder="Type or select (e.g. Whitefield, Indiranagar)" required>
+                            <div class="form-text">Search among 197 frequent localities or type any unlisted neighborhood.</div>
+                        </div>
 
-            <!-- SHAP Explainability Breakdown -->
-            <div class="shap-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0 fw-bold">Why the Model Predicted This Value</h5>
-                    <span class="badge bg-light text-dark border" id="baseValueBadge">City Baseline: ₹111.71L</span>
-                </div>
-                <p class="text-muted small mb-3">
-                    Shapley Additive exPlanations (TreeSHAP) allocate marginal contributions to each feature relative to the citywide baseline expected price.
-                </p>
+                        <!-- Area Type -->
+                        <div class="col-md-3">
+                            <label for="areaTypeSelect" class="form-label">Area Type</label>
+                            <select class="form-select" id="areaTypeSelect" name="area_type" required>
+                                <option value="Super built-up Area" selected>Super built-up Area</option>
+                                <option value="Built-up Area">Built-up Area</option>
+                                <option value="Plot Area">Plot Area</option>
+                                <option value="Carpet Area">Carpet Area</option>
+                            </select>
+                        </div>
 
-                <!-- Contributing Factors List -->
-                <div id="shapDriversList"></div>
+                        <!-- Availability -->
+                        <div class="col-md-3">
+                            <label for="availabilitySelect" class="form-label">Availability Status</label>
+                            <select class="form-select" id="availabilitySelect" name="availability" required>
+                                <option value="Ready To Move" selected>Ready To Move</option>
+                                <option value="Under Construction">Under Construction</option>
+                            </select>
+                        </div>
 
-                <div class="alert alert-light border mt-3 mb-0 small text-muted">
-                    <strong>Interpretation Note:</strong> SHAP values explain how the machine learning model arrived at this valuation. They represent statistical model feature attributions and do not establish causal relationships in the real housing market.
-                </div>
-            </div>
+                        <!-- Total Square Feet -->
+                        <div class="col-md-3">
+                            <label for="totalSqftInput" class="form-label">Total Area (Sq Ft)</label>
+                            <input type="number" class="form-control" id="totalSqftInput" name="total_sqft" 
+                                   placeholder="e.g. 1500" min="100" max="50000" step="1" required>
+                        </div>
 
-            <!-- Model & Rigor Metadata -->
-            <div class="metadata-box">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>ML Model:</strong> <span id="metaModel">XGBoost Regressor</span><br>
-                        <strong>Out-of-Sample Performance:</strong> Test R² = 0.6465 | MAE = ₹34.93 Lakhs
+                        <!-- BHK (Bedrooms) -->
+                        <div class="col-md-3">
+                            <label for="bhkInput" class="form-label">Bedrooms (BHK)</label>
+                            <input type="number" class="form-control" id="bhkInput" name="bhk" 
+                                   placeholder="e.g. 3" min="1" max="10" step="1" required>
+                        </div>
+
+                        <!-- Bathrooms -->
+                        <div class="col-md-3">
+                            <label for="bathInput" class="form-label">Bathrooms</label>
+                            <input type="number" class="form-control" id="bathInput" name="bath" 
+                                   placeholder="e.g. 2" min="1" max="10" step="1" required>
+                        </div>
+
+                        <!-- Balconies -->
+                        <div class="col-md-3">
+                            <label for="balconyInput" class="form-label">Balconies</label>
+                            <input type="number" class="form-control" id="balconyInput" name="balcony" 
+                                   placeholder="e.g. 2" min="0" max="5" step="1" required>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" id="submitBtn" class="btn btn-predict">
+                                <span id="btnText">Calculate Property Valuation</span>
+                                <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-6 text-md-end">
-                        <strong>Uncertainty Calibration:</strong> Out-of-fold 5-fold CV (9,620 samples)<br>
-                        <strong>Evaluation Coverage:</strong> 89.23% verified on 2,405 test properties
+                </form>
+            </div>
+
+            <!-- Single Result Container -->
+            <div id="resultContainer" class="result-container">
+                <!-- Location Note if Rare -->
+                <div id="rareLocationAlert" class="alert alert-warning d-none" role="alert">
+                    <strong>Locality Notice:</strong> <span id="rareLocationText"></span>
+                </div>
+
+                <!-- Point Prediction & Empirical Range -->
+                <div class="valuation-badge">
+                    <div class="text-uppercase tracking-wide text-muted small fw-bold mb-1">Estimated Property Valuation</div>
+                    <div class="point-price" id="predictedPrice">₹0.00 Lakhs</div>
+                    <div class="range-price" id="predictionRange">Empirical Prediction Interval: ₹0.00 L – ₹0.00 L</div>
+                    <div class="text-muted small mt-1" id="intervalWidthText">Range Width: ±₹69.00 Lakhs</div>
+                </div>
+
+                <!-- SHAP Explainability Breakdown -->
+                <div class="shap-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 fw-bold">Why the Model Predicted This Value</h5>
+                        <span class="badge bg-light text-dark border" id="baseValueBadge">City Baseline: ₹111.71L</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Shapley Additive exPlanations (TreeSHAP) allocate marginal contributions to each feature relative to the citywide baseline expected price.
+                    </p>
+
+                    <!-- Contributing Factors List -->
+                    <div id="shapDriversList"></div>
+
+                    <div class="alert alert-light border mt-3 mb-0 small text-muted">
+                        <strong>Interpretation Note:</strong> SHAP values explain how the machine learning model arrived at this valuation. They represent statistical model feature attributions and do not establish causal relationships in the real housing market.
                     </div>
                 </div>
-                <div class="disclaimer-text border-top pt-2 mt-2" id="disclaimerText"></div>
+
+                <!-- Model & Rigor Metadata -->
+                <div class="metadata-box">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>ML Model:</strong> <span id="metaModel">XGBoost Regressor</span><br>
+                            <strong>Out-of-Sample Performance:</strong> Test R² = 0.6465 | MAE = ₹34.93 Lakhs
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <strong>Uncertainty Calibration:</strong> Out-of-fold 5-fold CV (9,620 samples)<br>
+                            <strong>Evaluation Coverage:</strong> 89.23% verified on 2,405 test properties
+                        </div>
+                    </div>
+                    <div class="disclaimer-text border-top pt-2 mt-2" id="disclaimerText"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE 2: COMPARE PROPERTIES SECTION -->
+        <div id="compareValuationSection" class="tab-pane-content d-none">
+            <div class="form-section">
+                <div id="compareErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+
+                <form id="compareForm">
+                    <div class="row g-4">
+                        <!-- PROPERTY A PANEL -->
+                        <div class="col-lg-6">
+                            <div class="compare-panel panel-a">
+                                <div class="panel-title text-primary">
+                                    <span><span class="badge bg-primary me-2">PROPERTY A</span> Base Property</span>
+                                    <span class="badge bg-light text-muted border">Property 1</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="a_location" class="form-label">Neighborhood / Locality</label>
+                                        <input type="text" class="form-control" id="a_location" name="a_location" list="locationList" 
+                                               placeholder="e.g. Whitefield" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_area_type" class="form-label">Area Type</label>
+                                        <select class="form-select" id="a_area_type" name="a_area_type" required>
+                                            <option value="Super built-up Area" selected>Super built-up Area</option>
+                                            <option value="Built-up Area">Built-up Area</option>
+                                            <option value="Plot Area">Plot Area</option>
+                                            <option value="Carpet Area">Carpet Area</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_availability" class="form-label">Availability</label>
+                                        <select class="form-select" id="a_availability" name="a_availability" required>
+                                            <option value="Ready To Move" selected>Ready To Move</option>
+                                            <option value="Under Construction">Under Construction</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_total_sqft" class="form-label">Total Area (Sq Ft)</label>
+                                        <input type="number" class="form-control" id="a_total_sqft" name="a_total_sqft" 
+                                               placeholder="e.g. 1500" min="100" max="50000" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_bhk" class="form-label">Bedrooms (BHK)</label>
+                                        <input type="number" class="form-control" id="a_bhk" name="a_bhk" 
+                                               placeholder="e.g. 3" min="1" max="10" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_bath" class="form-label">Bathrooms</label>
+                                        <input type="number" class="form-control" id="a_bath" name="a_bath" 
+                                               placeholder="e.g. 2" min="1" max="10" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="a_balcony" class="form-label">Balconies</label>
+                                        <input type="number" class="form-control" id="a_balcony" name="a_balcony" 
+                                               placeholder="e.g. 2" min="0" max="5" step="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PROPERTY B PANEL -->
+                        <div class="col-lg-6">
+                            <div class="compare-panel panel-b">
+                                <div class="panel-title text-teal" style="color: #0d9488;">
+                                    <span><span class="badge me-2" style="background-color: #0d9488; color: white;">PROPERTY B</span> Comparison Property</span>
+                                    <span class="badge bg-light text-muted border">Property 2</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="b_location" class="form-label">Neighborhood / Locality</label>
+                                        <input type="text" class="form-control" id="b_location" name="b_location" list="locationList" 
+                                               placeholder="e.g. Indiranagar" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_area_type" class="form-label">Area Type</label>
+                                        <select class="form-select" id="b_area_type" name="b_area_type" required>
+                                            <option value="Super built-up Area">Super built-up Area</option>
+                                            <option value="Built-up Area">Built-up Area</option>
+                                            <option value="Plot Area" selected>Plot Area</option>
+                                            <option value="Carpet Area">Carpet Area</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_availability" class="form-label">Availability</label>
+                                        <select class="form-select" id="b_availability" name="b_availability" required>
+                                            <option value="Ready To Move" selected>Ready To Move</option>
+                                            <option value="Under Construction">Under Construction</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_total_sqft" class="form-label">Total Area (Sq Ft)</label>
+                                        <input type="number" class="form-control" id="b_total_sqft" name="b_total_sqft" 
+                                               placeholder="e.g. 2400" min="100" max="50000" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_bhk" class="form-label">Bedrooms (BHK)</label>
+                                        <input type="number" class="form-control" id="b_bhk" name="b_bhk" 
+                                               placeholder="e.g. 4" min="1" max="10" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_bath" class="form-label">Bathrooms</label>
+                                        <input type="number" class="form-control" id="b_bath" name="b_bath" 
+                                               placeholder="e.g. 4" min="1" max="10" step="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="b_balcony" class="form-label">Balconies</label>
+                                        <input type="number" class="form-control" id="b_balcony" name="b_balcony" 
+                                               placeholder="e.g. 2" min="0" max="5" step="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compare Submit Button -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" id="compareSubmitBtn" class="btn btn-compare">
+                                <span id="compareBtnText">Compare Properties</span>
+                                <span id="compareBtnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Compare Result Container -->
+            <div id="compareResultContainer" class="result-container">
+                <!-- Difference Callout Card (Step 7) -->
+                <div class="diff-callout-card">
+                    <div class="text-uppercase tracking-wide text-muted small fw-bold mb-1">Model-Estimated Price Difference</div>
+                    <div class="diff-headline" id="compareDiffAmount">₹0.00 Lakhs</div>
+                    <div class="diff-subtext mb-3" id="compareStatementText">Evaluating model estimates...</div>
+                    <div>
+                        <span class="comp-stat-pill text-primary" id="pillPropertyA">Property A: ₹0.00L</span>
+                        <span class="comp-stat-pill" style="color: #0d9488;" id="pillPropertyB">Property B: ₹0.00L</span>
+                        <span class="comp-stat-pill text-dark" id="pillDiff">Difference: ₹0.00L</span>
+                    </div>
+                </div>
+
+                <!-- Explanation Note (Step 9) -->
+                <div class="alert alert-info border mb-4 text-center" style="background-color: #f0f9ff; border-color: #bae6fd; color: #0369a1;">
+                    <strong>Valuation Context:</strong> Both properties were evaluated independently by the same trained XGBoost valuation model. The comparison shows the difference between the model's estimated prices and does not represent a guaranteed market price.
+                </div>
+
+                <!-- Simple Visual Comparison Bar Chart (Step 8) -->
+                <div class="vis-card">
+                    <h6 class="fw-bold mb-3 text-secondary">Predicted Price Comparison</h6>
+                    <div class="vis-bar-row">
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span class="text-primary" id="visLabelA">Property A</span>
+                            <span id="visValA">₹0.00L</span>
+                        </div>
+                        <div class="vis-bar-track">
+                            <div class="vis-bar-fill-a" id="visFillA" style="width: 50%;">₹0.00L</div>
+                        </div>
+                        <div class="text-muted small mt-1" id="visIntervalA" style="font-size: 0.78rem;">Interval: ₹0.00L – ₹0.00L</div>
+                    </div>
+                    <div class="vis-bar-row mt-3">
+                        <div class="d-flex justify-content-between small fw-bold mb-1">
+                            <span style="color: #0d9488;" id="visLabelB">Property B</span>
+                            <span id="visValB">₹0.00L</span>
+                        </div>
+                        <div class="vis-bar-track">
+                            <div class="vis-bar-fill-b" id="visFillB" style="width: 50%;">₹0.00L</div>
+                        </div>
+                        <div class="text-muted small mt-1" id="visIntervalB" style="font-size: 0.78rem;">Interval: ₹0.00L – ₹0.00L</div>
+                    </div>
+                </div>
+
+                <!-- Side-by-Side Detailed Breakdown -->
+                <div class="row g-4 mb-4">
+                    <!-- Property A Detailed Column -->
+                    <div class="col-lg-6">
+                        <div class="shap-card border-top border-4 border-primary">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 fw-bold text-primary">Property A Valuation</h5>
+                                <span class="badge bg-primary">Base Property</span>
+                            </div>
+                            <div class="valuation-badge py-3 mb-3">
+                                <div class="point-price fs-2 text-primary" id="compPriceA">₹0.00L</div>
+                                <div class="range-price small" id="compRangeA">Interval: ₹0.00L – ₹0.00L</div>
+                                <div class="text-muted small" id="compWidthA">Width: ±₹69.00L</div>
+                            </div>
+                            <div id="compRareAlertA" class="alert alert-warning d-none py-2 small" role="alert">
+                                <strong>Notice:</strong> <span id="compRareTextA"></span>
+                            </div>
+                            <h6 class="fw-bold small text-muted text-uppercase mb-2">Top Contributing Drivers (SHAP)</h6>
+                            <div id="compShapDriversA"></div>
+                        </div>
+                    </div>
+
+                    <!-- Property B Detailed Column -->
+                    <div class="col-lg-6">
+                        <div class="shap-card border-top border-4" style="border-top-color: #0d9488 !important;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0 fw-bold" style="color: #0d9488;">Property B Valuation</h5>
+                                <span class="badge" style="background-color: #0d9488; color: white;">Comparison</span>
+                            </div>
+                            <div class="valuation-badge py-3 mb-3">
+                                <div class="point-price fs-2" style="color: #0d9488;" id="compPriceB">₹0.00L</div>
+                                <div class="range-price small" id="compRangeB">Interval: ₹0.00L – ₹0.00L</div>
+                                <div class="text-muted small" id="compWidthB">Width: ±₹69.00L</div>
+                            </div>
+                            <div id="compRareAlertB" class="alert alert-warning d-none py-2 small" role="alert">
+                                <strong>Notice:</strong> <span id="compRareTextB"></span>
+                            </div>
+                            <h6 class="fw-bold small text-muted text-uppercase mb-2">Top Contributing Drivers (SHAP)</h6>
+                            <div id="compShapDriversB"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model & Rigor Metadata -->
+                <div class="metadata-box">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>ML Model:</strong> <span>XGBoost Regressor (100 estimators, max_depth=6)</span><br>
+                            <strong>Out-of-Sample Performance:</strong> Test R² = 0.6465 | MAE = ₹34.93 Lakhs
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <strong>Uncertainty Calibration:</strong> Out-of-fold 5-fold CV (9,620 samples)<br>
+                            <strong>Evaluation Coverage:</strong> 89.23% verified on 2,405 test properties
+                        </div>
+                    </div>
+                    <div class="disclaimer-text border-top pt-2 mt-2" id="compareDisclaimerText"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Datalist Autocomplete shared across forms -->
+<datalist id="locationList">
+    {% for loc in locations %}
+    <option value="{{ loc }}"></option>
+    {% endfor %}
+</datalist>
+
 <script>
+// --- Mode Tab Navigation ---
+document.querySelectorAll('.mode-tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.mode-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane-content').forEach(p => p.classList.add('d-none'));
+        this.classList.add('active');
+        const targetId = this.getAttribute('data-target');
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) {
+            targetPane.classList.remove('d-none');
+        }
+    });
+});
+
+// Helper function to render SHAP driver rows
+function renderShapList(container, drivers) {
+    container.innerHTML = '';
+    if (!drivers || drivers.length === 0) return;
+    const maxImpact = Math.max(...drivers.map(d => Math.abs(d.shap_value)), 1.0);
+    const sorted = [...drivers].sort((a, b) => b.shap_value - a.shap_value);
+
+    sorted.forEach(driver => {
+        const isPos = driver.shap_value >= 0;
+        const absVal = Math.abs(driver.shap_value);
+        const barWidth = Math.min(100, (absVal / maxImpact) * 100);
+
+        const row = document.createElement('div');
+        row.className = 'driver-row';
+        row.innerHTML = `
+            <div class="driver-name">${driver.feature}</div>
+            <div class="driver-bar-container">
+                <div class="driver-bar ${isPos ? 'positive' : 'negative'}" style="width: ${barWidth}%"></div>
+            </div>
+            <div class="driver-impact ${isPos ? 'positive' : 'negative'}">
+                ${isPos ? '+' : '-'}₹${absVal.toFixed(2)}L
+            </div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+// --- Single Property Valuation Form Handler ---
 document.getElementById('valuationForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -320,14 +746,12 @@ document.getElementById('valuationForm').addEventListener('submit', async functi
         balcony: parseFloat(form.balcony.value)
     };
 
-    // Client-side quick check
     if (isNaN(payload.total_sqft) || payload.total_sqft <= 0) {
         errorAlert.textContent = "Please enter a valid positive square footage.";
         errorAlert.classList.remove('d-none');
         return;
     }
 
-    // Set Loading UI
     btnText.textContent = "Computing Valuation & SHAP Analysis...";
     btnSpinner.classList.remove('d-none');
     submitBtn.disabled = true;
@@ -362,34 +786,7 @@ document.getElementById('valuationForm').addEventListener('submit', async functi
         // 3. Populate SHAP Breakdown
         const shap = data.shap_explanation;
         document.getElementById('baseValueBadge').textContent = `City Baseline E[f(x)]: ₹${shap.base_value_lakhs.toFixed(2)}L`;
-
-        const driversContainer = document.getElementById('shapDriversList');
-        driversContainer.innerHTML = '';
-
-        // Find max impact magnitude to scale the bars
-        const maxImpact = Math.max(...shap.feature_contributions.map(d => Math.abs(d.shap_value)), 1.0);
-
-        // Sort descending by value (positive on top)
-        const sortedContributions = [...shap.feature_contributions].sort((a, b) => b.shap_value - a.shap_value);
-
-        sortedContributions.forEach(driver => {
-            const isPos = driver.shap_value >= 0;
-            const absVal = Math.abs(driver.shap_value);
-            const barWidth = Math.min(100, (absVal / maxImpact) * 100);
-
-            const row = document.createElement('div');
-            row.className = 'driver-row';
-            row.innerHTML = `
-                <div class="driver-name">${driver.feature}</div>
-                <div class="driver-bar-container">
-                    <div class="driver-bar ${isPos ? 'positive' : 'negative'}" style="width: ${barWidth}%"></div>
-                </div>
-                <div class="driver-impact ${isPos ? 'positive' : 'negative'}">
-                    ${isPos ? '+' : '-'}₹${absVal.toFixed(2)}L
-                </div>
-            `;
-            driversContainer.appendChild(row);
-        });
+        renderShapList(document.getElementById('shapDriversList'), shap.feature_contributions);
 
         // 4. Metadata & Disclaimers
         document.getElementById('disclaimerText').textContent = data.disclaimer;
@@ -402,6 +799,142 @@ document.getElementById('valuationForm').addEventListener('submit', async functi
         errorAlert.classList.remove('d-none');
     } finally {
         btnText.textContent = "Calculate Property Valuation";
+        btnSpinner.classList.add('d-none');
+        submitBtn.disabled = false;
+    }
+});
+
+// --- Compare Properties Form Handler ---
+document.getElementById('compareForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const errorAlert = document.getElementById('compareErrorAlert');
+    const resultContainer = document.getElementById('compareResultContainer');
+    const submitBtn = document.getElementById('compareSubmitBtn');
+    const btnText = document.getElementById('compareBtnText');
+    const btnSpinner = document.getElementById('compareBtnSpinner');
+
+    errorAlert.classList.add('d-none');
+    errorAlert.textContent = '';
+
+    const payload = {
+        property_a: {
+            location: form.a_location.value.trim(),
+            area_type: form.a_area_type.value,
+            availability: form.a_availability.value,
+            total_sqft: parseFloat(form.a_total_sqft.value),
+            bhk: parseInt(form.a_bhk.value),
+            bath: parseFloat(form.a_bath.value),
+            balcony: parseFloat(form.a_balcony.value)
+        },
+        property_b: {
+            location: form.b_location.value.trim(),
+            area_type: form.b_area_type.value,
+            availability: form.b_availability.value,
+            total_sqft: parseFloat(form.b_total_sqft.value),
+            bhk: parseInt(form.b_bhk.value),
+            bath: parseFloat(form.b_bath.value),
+            balcony: parseFloat(form.b_balcony.value)
+        }
+    };
+
+    // Client check
+    if (isNaN(payload.property_a.total_sqft) || payload.property_a.total_sqft <= 0) {
+        errorAlert.textContent = "Property A: Please enter a valid positive square footage.";
+        errorAlert.classList.remove('d-none');
+        return;
+    }
+    if (isNaN(payload.property_b.total_sqft) || payload.property_b.total_sqft <= 0) {
+        errorAlert.textContent = "Property B: Please enter a valid positive square footage.";
+        errorAlert.classList.remove('d-none');
+        return;
+    }
+
+    btnText.textContent = "Comparing Properties via ML Pipeline...";
+    btnSpinner.classList.remove('d-none');
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch('/compare', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Property comparison failed. Please verify inputs.");
+        }
+
+        const propA = data.property_a;
+        const propB = data.property_b;
+        const comp = data.comparison;
+
+        // 1. Comparison Headline
+        document.getElementById('compareDiffAmount').textContent = `₹ ${comp.absolute_difference_lakhs.toLocaleString('en-IN', {minimumFractionDigits: 2})} Lakhs`;
+        document.getElementById('compareStatementText').textContent = comp.comparison_statement;
+        document.getElementById('pillPropertyA').textContent = `Property A: ₹${propA.prediction.toFixed(2)}L`;
+        document.getElementById('pillPropertyB').textContent = `Property B: ₹${propB.prediction.toFixed(2)}L`;
+        document.getElementById('pillDiff').textContent = `Difference: ₹${comp.absolute_difference_lakhs.toFixed(2)}L`;
+
+        // 2. Visual Comparison Bars
+        const maxVal = Math.max(propA.upper_bound, propB.upper_bound, propA.prediction, propB.prediction, 1.0);
+        const pctA = Math.min(100, Math.max(15, (propA.prediction / maxVal) * 100));
+        const pctB = Math.min(100, Math.max(15, (propB.prediction / maxVal) * 100));
+
+        document.getElementById('visLabelA').textContent = `Property A (${payload.property_a.location})`;
+        document.getElementById('visValA').textContent = `₹${propA.prediction.toFixed(2)}L`;
+        document.getElementById('visFillA').style.width = `${pctA}%`;
+        document.getElementById('visFillA').textContent = `₹${propA.prediction.toFixed(2)}L`;
+        document.getElementById('visIntervalA').textContent = `Interval: ₹${propA.lower_bound.toFixed(2)}L – ₹${propA.upper_bound.toFixed(2)}L (Width: ±₹${propA.uncertainty_delta.toFixed(2)}L)`;
+
+        document.getElementById('visLabelB').textContent = `Property B (${payload.property_b.location})`;
+        document.getElementById('visValB').textContent = `₹${propB.prediction.toFixed(2)}L`;
+        document.getElementById('visFillB').style.width = `${pctB}%`;
+        document.getElementById('visFillB').textContent = `₹${propB.prediction.toFixed(2)}L`;
+        document.getElementById('visIntervalB').textContent = `Interval: ₹${propB.lower_bound.toFixed(2)}L – ₹${propB.upper_bound.toFixed(2)}L (Width: ±₹${propB.uncertainty_delta.toFixed(2)}L)`;
+
+        // 3. Property A Detail Card
+        document.getElementById('compPriceA').textContent = `₹ ${propA.prediction.toFixed(2)} Lakhs`;
+        document.getElementById('compRangeA').textContent = `Interval: ₹ ${propA.lower_bound.toFixed(2)}L – ₹ ${propA.upper_bound.toFixed(2)}L`;
+        document.getElementById('compWidthA').textContent = `Width: ₹ ${propA.interval_width.toFixed(2)}L (±₹${propA.uncertainty_delta.toFixed(2)}L)`;
+
+        const rareA = document.getElementById('compRareAlertA');
+        if (propA.is_rare_location) {
+            document.getElementById('compRareTextA').textContent = propA.location_note;
+            rareA.classList.remove('d-none');
+        } else {
+            rareA.classList.add('d-none');
+        }
+        renderShapList(document.getElementById('compShapDriversA'), propA.shap_explanation.feature_contributions);
+
+        // 4. Property B Detail Card
+        document.getElementById('compPriceB').textContent = `₹ ${propB.prediction.toFixed(2)} Lakhs`;
+        document.getElementById('compRangeB').textContent = `Interval: ₹ ${propB.lower_bound.toFixed(2)}L – ₹ ${propB.upper_bound.toFixed(2)}L`;
+        document.getElementById('compWidthB').textContent = `Width: ₹ ${propB.interval_width.toFixed(2)}L (±₹${propB.uncertainty_delta.toFixed(2)}L)`;
+
+        const rareB = document.getElementById('compRareAlertB');
+        if (propB.is_rare_location) {
+            document.getElementById('compRareTextB').textContent = propB.location_note;
+            rareB.classList.remove('d-none');
+        } else {
+            rareB.classList.add('d-none');
+        }
+        renderShapList(document.getElementById('compShapDriversB'), propB.shap_explanation.feature_contributions);
+
+        // 5. Disclaimer
+        document.getElementById('compareDisclaimerText').textContent = data.disclaimer;
+
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (err) {
+        errorAlert.textContent = err.message;
+        errorAlert.classList.remove('d-none');
+    } finally {
+        btnText.textContent = "Compare Properties";
         btnSpinner.classList.add('d-none');
         submitBtn.disabled = false;
     }
